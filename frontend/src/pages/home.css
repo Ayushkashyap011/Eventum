@@ -1,0 +1,18 @@
+/* Reset default margin and padding */
+
+
+
+/* Home Container */
+.home-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ensure content starts below navbar */
+.content {
+    width: 100%;
+    margin-top: 80px; /* Adjust to match the navbar height */
+}
+
