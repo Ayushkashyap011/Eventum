@@ -52,27 +52,32 @@ body{
 .mission-vision-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: 30px; /* Space between Mission and Vision */
+    align-items: stretch;
+    gap: 40px;
     flex-wrap: wrap;
-    max-width: 1000px;
-    margin: 60px auto;
-    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 80px auto;
+    padding: 30px;
 }
 
 /* Individual Sections */
-.mission-section,
-.vision-section {
-    width: 45%;
-    min-width: 320px;
-    padding: 40px;
+.mission-section, .vision-section {
+    flex: 1;
+    min-width: 400px;
+    max-width: 500px;
+    padding: 50px;
     background: rgba(255, 255, 255, 0.12);
     border-radius: 15px;
     text-align: center;
     transition: transform 0.8s ease-out, opacity 0.8s ease-out;
     opacity: 0;
-    box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.1);
-    position: relative;
+    box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 /* Default Hidden State for Animation */
@@ -85,12 +90,7 @@ body{
 }
 
 /* Active Animation */
-.slide-left {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.slide-right {
+.slide-left, .slide-right {
     transform: translateX(0);
     opacity: 1;
 }
@@ -138,4 +138,10 @@ body{
     text-align: center;
     padding: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-text{
+    text-align: center;
+    gap: 40px;
+    padding: 0px 15rem;
 }

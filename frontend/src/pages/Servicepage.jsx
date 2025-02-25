@@ -48,35 +48,37 @@ const Services = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="services-container">
-      <Navbar />
+    <>
+      <div className="services-container">
+        <Navbar />
 
-      {/* Hero Section */}
-      <section className="services-hero">
-        <div className="rotating-image-container">
-          <img src={rotatingImage} alt="Rotating Logo" className="rotating-image" />
-        </div>
-        <h1>Our Services</h1>
-        <p>We create extraordinary events tailored to your needs.</p>
-      </section>
-
-      {/* Services List */}
-      <div className="services-list">
-        {servicesData.map((service, index) => (
-          <div key={index} className="service-card">
-            <div className="service-content">
-              <h2>{service.title}</h2>
-              <p>{service.description}</p>
-              <p className="service-details">{service.details}</p>
-              <button onClick={() => navigate("/booking")}>Book Now</button>
-            </div>
-            <div className="service-image" style={{ backgroundImage: `url(${service.image})` }}></div>
+        {/* Hero Section */}
+        <section className="services-hero">
+          <div className="rotating-image-container">
+            <img src={rotatingImage} alt="Rotating Logo" className="rotating-image" />
           </div>
-        ))}
-      </div>
+          <h1>Our Services</h1>
+          <p>Where Every Event Becomes a Celebration.</p>
+        </section>
 
+        {/* Services List */}
+        <div className="services-list">
+          {servicesData.map((service, index) => (
+            <div key={index} className="service-card-page">
+              <div className="service-content-page">
+                <h2>{service.title}</h2>
+                <p>{service.description}</p>
+                <p className="service-details">{service.details}</p>
+                <button onClick={() => navigate("/booking")}>Book Now</button>
+              </div>
+              <div className="service-image-page" style={{ backgroundImage: `url(${service.image})` }}></div>
+            </div>
+          ))}
+        </div>
+
+      </div>
       <Footer />
-    </div>
+    </>
   );
 };
 
