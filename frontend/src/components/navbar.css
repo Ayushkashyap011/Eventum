@@ -117,3 +117,46 @@
         display: block;
     }
 }
+
+/* User Dropdown */
+.user-dropdown {
+    position: relative;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .user-name {
+    padding: 10px 15px;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgb(51, 18, 49);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 10px;
+    display: none;
+    width: 120px;
+    border-radius: 5px;
+    text-align: left;
+  }
+  
+  .user-dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  
+  .dropdown-menu li {
+    padding: 8px;
+    cursor: pointer;
+    color: rgb(248, 244, 244);
+    font-weight: 600;
+    font-size: 12px;
+  }
+  
+  .dropdown-menu li:hover {
+    background: #e00d0d;
+  }
+  

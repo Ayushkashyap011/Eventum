@@ -29,6 +29,21 @@ h1{
   min-height: 480px;
 }
 
+/* Ensures phone input matches the others */
+.container input[type="tel"] {
+  background: linear-gradient(145deg, #2a003d, #4b0082);
+  border: 1px solid #7d00b3;
+  color: #fff;
+  margin: 8px 0;
+  padding: 10px 15px;
+  font-size: 13px;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+  box-shadow: inset 2px 2px 5px #1a001f, inset -2px -2px 5px #5e008e;
+}
+
+
 /* Styling for text and links */
 .container p {
   font-size: 14px;

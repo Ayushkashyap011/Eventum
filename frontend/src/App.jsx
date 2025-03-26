@@ -6,6 +6,9 @@ import About from "./pages/AboutPage";
 import Services from "./pages/Servicepage";
 import Booking from "./pages/booking";
 import Gallery from "./pages/gallery";
+import Profile from "./pages/Profile";
+import MyBookings from "./pages/MyBookings";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   return (
@@ -17,7 +20,9 @@ const App = () => {
         <Route path="/services" element={<Services />}/>
         <Route path="/booking" element={<Booking />}/>
         <Route path="/gallery" element={<Gallery/>}/>
-
+        <Route path="/profile" element ={<Profile/>}/>
+        <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path ="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

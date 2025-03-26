@@ -5,20 +5,59 @@ import "./Booking.css";
 
 const Booking = () => {
   const [formData, setFormData] = useState({
-    meetingTime: "",
-    eventStartTime: "",
+    eventDate: "",
     eventPlan: "",
     eventDetails: "",
     budget: "",
   });
 
+  const [loading, setLoading] = useState(false); // Loading state
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Booking submitted successfully!");
+    setLoading(true); // Start loading
+
+    try {
+      const token = localStorage.getItem("token"); // Get token
+
+      if (!token) {
+        alert("⚠️ You need to log in to book an event.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("http://localhost:5000/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Send token
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("✅ Booking submitted successfully!");
+        setFormData({
+          eventDate: "",
+          eventPlan: "",
+          eventDetails: "",
+          budget: "",
+        }); // Reset form
+      } else {
+        alert(`❌ Booking failed: ${data.message || "Something went wrong!"}`);
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("⚠️ An error occurred while submitting the booking.");
+    }
+
+    setLoading(false); // Stop loading
   };
 
   return (
@@ -26,30 +65,50 @@ const Booking = () => {
       <div className="booking-container">
         <Navbar />
         <section className="booking-form">
-          <h1>Book Your Event</h1>
+          <h1>📅 Book Your Event</h1>
           <form onSubmit={handleSubmit}>
             {/* Meeting Time */}
             <label>Meeting Time:</label>
-            <input type="datetime-local" name="meetingTime" onChange={handleChange} required />
+            <input
+              type="datetime-local"
+              name="eventDate"
+              value={formData.eventDate}
+              onChange={handleChange}
+              required
+            />
 
             {/* Event Plan Selection */}
             <label>Event Plan:</label>
-            <select name="eventPlan" onChange={handleChange} required>
+            <select name="eventPlan" value={formData.eventPlan} onChange={handleChange} required>
               <option value="">Select Plan</option>
-              <option value="basic">Basic Package</option>
-              <option value="premium">Premium Package</option>
+              <option value="Basic">Basic Package</option>
+              <option value="Premium">Premium Package</option>
             </select>
 
             {/* Event Description */}
             <label>Describe Your Event:</label>
-            <textarea name="eventDetails" onChange={handleChange} required placeholder="Tell us about your event, theme, expectations..."></textarea>
+            <textarea
+              name="eventDetails"
+              value={formData.eventDetails}
+              onChange={handleChange}
+              required
+              placeholder="Tell us about your event, theme, expectations..."
+            ></textarea>
 
             {/* Estimated Budget */}
             <label>Estimated Budget (₹):</label>
-            <input type="number" name="budget" onChange={handleChange} required />
+            <input
+              type="number"
+              name="budget"
+              value={formData.budget}
+              onChange={handleChange}
+              required
+            />
 
             {/* Submit Button */}
-            <button type="submit">Submit Booking</button>
+            <button type="submit" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Booking"}
+            </button>
           </form>
         </section>
       </div>
