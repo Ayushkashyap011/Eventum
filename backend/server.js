@@ -3,7 +3,6 @@ const dotenv = require("dotenv");    // Load environment variables
 const cors = require("cors");        // Allow frontend-backend communication
 const mongoose = require("mongoose"); // Import Mongoose for MongoDB
 const cookieParser = require("cookie-parser"); // Handle cookies
-
 require("dotenv").config(); // Load variables from .env file
 
 const app = express(); // Create an Express app
@@ -18,8 +17,9 @@ app.use(
   })
 );
 app.use(express.json()); // Allow JSON data in requests
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
+
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/bookings", require("./routes/bookingRoutes"));
 
 app.use(cookieParser()); // Enable handling cookies
@@ -27,10 +27,7 @@ app.use(cookieParser()); // Enable handling cookies
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB Connected Successfully");
   } catch (error) {
     console.error("❌ MongoDB Connection Failed:", error);

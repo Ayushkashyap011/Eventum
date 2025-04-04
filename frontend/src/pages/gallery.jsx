@@ -13,8 +13,15 @@ import img6 from "../assets/gallery5.jpeg";
 import img7 from "../assets/gallery6.avif";
 import img8 from "../assets/pool-party.jpg";
 import img9 from "../assets/wedding.jpg";
+import img10 from "../assets/corporate-event1.jpeg";
+import img11 from "../assets/wedding1.jpg";
+import img12 from "../assets/birthday1.png";
+import img13 from "../assets/wedding2.jpg";
+import img14 from "../assets/coporate-imag1.jpg";
+import img15 from "../assets/wedding3.jpg";
 
-const galleryImages = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
+
+const galleryImages = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12, img13,img14,img15];
 
 const Gallery = () => {
   return (

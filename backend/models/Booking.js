@@ -7,7 +7,7 @@ const bookingSchema = new mongoose.Schema(
     eventDetails: { type: String, required: true }, // Event description
     eventDate: { type: Date, required: true }, // Meeting time
     budget: { type: Number, required: true }, // Budget
-    status: { type: String, default: "Pending" }, // Pending, Confirmed, Cancelled
+    status: { type: String, enum: ["Pending", "Done", "Cancelled"], default: "Pending" }, // Pending, Confirmed, Cancelled
   },
   { timestamps: true }
 );
