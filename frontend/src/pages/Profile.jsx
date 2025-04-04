@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/footer";
-import "./profile.css";
+import "./Profile.css";
 import { FaTimes } from "react-icons/fa";
 import Modal from "react-modal";
 
