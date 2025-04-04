@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import About from "./pages/AboutPage";
 import Services from "./pages/Servicepage";
-import Booking from "./pages/booking";
+import Booking from "./pages/Booking";
 import Gallery from "./pages/gallery";
 import Profile from "./pages/Profile";
 import MyBookings from "./pages/MyBookings";
