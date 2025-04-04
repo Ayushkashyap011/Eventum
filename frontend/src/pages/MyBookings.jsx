@@ -19,7 +19,7 @@ const MyBookings = () => {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/bookings/my", {
+        const response = await fetch("https://eventum.onrender.com/api/bookings/my", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

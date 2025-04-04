@@ -9,7 +9,7 @@ const AdminDashboard = () => {
   const [adminName, setAdminName] = useState("Admin");
   const [activeTab, setActiveTab] = useState("Dashboard");
 
-  const API_BASE = "http://localhost:5000/api/admin";
+  const API_BASE = "https://eventum.onrender.com/api/admin";
 
   // Fetch Dashboard Stats
   const fetchDashboardStats = async () => {
