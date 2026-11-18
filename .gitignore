@@ -37,3 +37,8 @@ yarn-debug.log*
 # System
 .DS_Store
 Thumbs.db
+
+# Personal Education / Interview Guides (Local Only - Never Push)
+ARCHITECTURE_AND_INTERVIEW_GUIDE.md
+*INTERVIEW_GUIDE*.md
+
