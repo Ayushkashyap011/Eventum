@@ -1,21 +1,22 @@
+import React from "react";
 import HeroSection from "../components/HeroSection";
 import AboutUs from "../components/AboutUs";
 import Services from "../components/Services";
 import Navbar from "../components/Navbar";
 import Feedback from "../components/Feedback";
 import Footer from "../components/footer";
-import "./home.css";
+
 const Home = () => {
   return (
-    <div className="home-container">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <Navbar />
-      <div className="content">
+      <main className="flex-1">
         <HeroSection />
         <AboutUs />
         <Services />
         <Feedback />
-        <Footer />
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 };

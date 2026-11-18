@@ -1,136 +1,287 @@
 import React, { useState } from "react";
-import "./Login.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGooglePlusG,
-  faFacebookF,
-  faGithub,
-  faLinkedinIn,
-} from "@fortawesome/free-brands-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import api from "../api/api";
+import { FaEnvelope, FaLock, FaUser, FaPhone, FaEye, FaEyeSlash, FaArrowLeft, FaShieldAlt } from "react-icons/fa";
+import logo from "../assets/logo.jpg";
 
 const Login = () => {
-  const [isActive, setIsActive] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // ✅ Signup Handler
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("https://eventum-backend.onrender.com/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify({ name, email, phone }));
-        navigate("/");
-      } else {
-        alert(data.message || "Signup failed");
-      }
-    } catch (error) {
-      console.error("Signup Error:", error);
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Login Handler
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
-      const response = await fetch("https://eventum-backend.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      if (isSignup) {
+        // Signup
+        const res = await api.signup({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+        });
 
-      const data = await response.json();
-      console.log("Login response:", data);
+        localStorage.setItem("token", res.token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            name: res.name || formData.name,
+            email: res.email || formData.email,
+            phone: res.phone || formData.phone,
+            isAdmin: res.isAdmin || false,
+          })
+        );
 
-      if (response.ok) {
-        // Defensive fallback
-        const user = {
-          name: data.name || "User",
-          email: data.email || email,
-          phone: data.phone || "",
-          isAdmin: data.isAdmin || false,
-        };
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        if (user.isAdmin) {
+        if (res.isAdmin) {
           navigate("/admin");
         } else {
           navigate("/");
         }
       } else {
-        alert(data.message || "Login failed");
+        // Login
+        const res = await api.login({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        localStorage.setItem("token", res.token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            name: res.name || "User",
+            email: res.email || formData.email,
+            phone: res.phone || "",
+            isAdmin: res.isAdmin || false,
+          })
+        );
+
+        if (res.isAdmin) {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       }
-    } catch (error) {
-      console.error("Login Error:", error);
+    } catch (err) {
+      console.error("Auth error:", err);
+      setError(err.message || "Authentication failed. Please check your credentials.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className={`container ${isActive ? "active" : ""}`} id="container">
-      {/* Signup Form */}
-      <div className="form-container sign-up">
-        <form onSubmit={handleSignup}>
-          <h1>Create Account</h1>
-          {/* <div className="social-icons">
-            <a href="#" className="icon"><FontAwesomeIcon icon={faGooglePlusG} /></a>
-            <a href="#" className="icon"><FontAwesomeIcon icon={faFacebookF} /></a>
-            <a href="#" className="icon"><FontAwesomeIcon icon={faGithub} /></a>
-            <a href="#" className="icon"><FontAwesomeIcon icon={faLinkedinIn} /></a>
-          </div> */}
-          <span>or use your email for registration</span>
-          <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-          <input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <button type="submit">Sign Up</button>
-        </form>
-      </div>
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden text-slate-100">
+      {/* Background glowing orbs */}
+      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-      {/* Login Form */}
-      <div className="form-container sign-in">
-        <form onSubmit={handleLogin}>
-          <h1>Sign In</h1>
-          {/* <div className="social-icons">
-            <a href="#" className="icon"><FontAwesomeIcon icon={faGooglePlusG} /></a>
-            <a href="#" className="icon"><FontAwesomeIcon icon={faFacebookF} /></a>
-            <a href="#" className="icon"><FontAwesomeIcon icon={faGithub} /></a>
-            <a href="#" className="icon"><FontAwesomeIcon icon={faLinkedinIn} /></a>
-          </div> */}
-          <span>or use your email and password</span>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <a href="#">Forgot Your Password?</a>
-          <button type="submit">Sign In</button>
-        </form>
-      </div>
+      {/* Back to Home Link */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+      >
+        <FaArrowLeft /> Back to Eventum
+      </Link>
 
-      {/* Toggle Panel */}
-      <div className="toggle-container">
-        <div className="toggle">
-          <div className="toggle-panel toggle-left">
-            <h1>Welcome Back!</h1>
-            <p>Enter your personal details to use all of the site's features</p>
-            <button className="hidden" onClick={() => setIsActive(false)}>Sign In</button>
+      <div className="max-w-md w-full bg-slate-900/90 rounded-3xl border border-slate-800 p-8 shadow-2xl backdrop-blur-xl relative z-10 space-y-6">
+        {/* Logo and Branding */}
+        <div className="text-center space-y-2">
+          <Link to="/" className="inline-block">
+            <img
+              src={logo}
+              alt="Eventum"
+              className="w-16 h-16 rounded-full mx-auto object-cover ring-4 ring-amber-500/40 shadow-lg"
+            />
+          </Link>
+          <h2 className="text-2xl font-black bg-gradient-to-r from-amber-400 via-rose-400 to-purple-400 bg-clip-text text-transparent">
+            EVENTUM
+          </h2>
+          <p className="text-xs text-slate-400">
+            {isSignup ? "Create your account to book and manage events" : "Sign in to access your event bookings & account"}
+          </p>
+        </div>
+
+        {/* Tab Switcher */}
+        <div className="grid grid-cols-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-semibold">
+          <button
+            type="button"
+            onClick={() => {
+              setIsSignup(false);
+              setError("");
+            }}
+            className={`py-2 rounded-lg transition-all ${
+              !isSignup ? "bg-amber-500 text-slate-950 font-bold shadow" : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsSignup(true);
+              setError("");
+            }}
+            className={`py-2 rounded-lg transition-all ${
+              isSignup ? "bg-amber-500 text-slate-950 font-bold shadow" : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Create Account
+          </button>
+        </div>
+
+        {/* State Notice Banner */}
+        {location.state?.message && !error && (
+          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
+            {location.state.message}
           </div>
-          <div className="toggle-panel toggle-right">
-            <h1>Hello, Friend!</h1>
-            <p>Register with your personal details to use all of the site's features</p>
-            <button className="hidden" onClick={() => setIsActive(true)}>Sign Up</button>
+        )}
+
+        {/* Error Alert */}
+        {error && (
+          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+            {error}
           </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {isSignup && (
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-slate-300">Full Name</label>
+              <div className="relative">
+                <FaUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="e.g. Subham Mohapatra"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
+                />
+              </div>
+            </div>
+          )}
+
+          {isSignup && (
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-slate-300">Phone Number</label>
+              <div className="relative">
+                <FaPhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="e.g. 9430777011"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-slate-300">Email Address</label>
+            <div className="relative">
+              <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+              <input
+                type="email"
+                name="email"
+                placeholder="name@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-slate-300">Password</label>
+            <div className="relative">
+              <FaLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                minLength="4"
+                className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:from-amber-400 hover:to-purple-500 shadow-lg shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 mt-2"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                Processing...
+              </span>
+            ) : isSignup ? (
+              "Complete Registration"
+            ) : (
+              "Sign In to Account"
+            )}
+          </button>
+        </form>
+
+        <div className="text-center text-xs text-slate-400 pt-2">
+          {isSignup ? (
+            <p>
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => setIsSignup(false)}
+                className="text-amber-400 font-semibold hover:underline"
+              >
+                Sign In
+              </button>
+            </p>
+          ) : (
+            <p>
+              Don't have an account yet?{" "}
+              <button
+                type="button"
+                onClick={() => setIsSignup(true)}
+                className="text-amber-400 font-semibold hover:underline"
+              >
+                Create Account
+              </button>
+            </p>
+          )}
         </div>
       </div>
     </div>
