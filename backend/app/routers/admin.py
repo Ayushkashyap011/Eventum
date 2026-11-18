@@ -14,8 +14,13 @@ async def get_dashboard_stats(admin_user: dict = Depends(get_current_admin_user)
     total_users = await db["users"].count_documents({})
     total_bookings = await db["bookings"].count_documents({})
     
-    # Calculate total revenue from budget field
+    # Calculate total revenue from budget field (excluding Cancelled bookings)
     revenue_pipeline = [
+        {
+            "$match": {
+                "status": {"$nin": ["Cancelled", "cancelled"]}
+            }
+        },
         {
             "$group": {
                 "_id": None,

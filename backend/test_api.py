@@ -59,6 +59,23 @@ def run_tests():
         print("6. My Bookings response:", res.status_code, "Count:", res.json().get("count"))
         assert res.status_code == 200
 
+        # 7. Test Admin Dashboard Stats
+        admin_login = client.post("/api/auth/login", json={"email": "admin@gmail.com", "password": "1234567890"})
+        if admin_login.status_code == 200:
+            admin_token = admin_login.json()["token"]
+            admin_stats = client.get("/api/admin/dashboard-stats", headers={"Authorization": f"Bearer {admin_token}"})
+            print("7. Admin Dashboard Stats:", admin_stats.status_code, admin_stats.json().get("stats"))
+            assert admin_stats.status_code == 200
+
+        # Clean up test artifacts
+        import pymongo
+        from app.config import settings
+        sync_client = pymongo.MongoClient(settings.MONGO_URI)
+        sync_db = sync_client[settings.DB_NAME]
+        sync_db["bookings"].delete_many({"eventDetails": {"$regex": "^Test Grand Gala"}})
+        sync_db["users"].delete_many({"email": {"$regex": "^test_"}})
+        sync_client.close()
+
         print("\nAll End-to-End FastAPI Tests Passed Successfully!")
 
 if __name__ == "__main__":

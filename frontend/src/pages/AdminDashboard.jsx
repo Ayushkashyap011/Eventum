@@ -73,9 +73,21 @@ const AdminDashboard = () => {
     try {
       await api.updateBookingStatus(id, newStatus);
       // Update local state optimistically
-      setBookings((prev) =>
-        prev.map((b) => (b._id === id || b.id === id ? { ...b, status: newStatus } : b))
+      const updatedBookings = bookings.map((b) =>
+        b._id === id || b.id === id ? { ...b, status: newStatus } : b
       );
+      setBookings(updatedBookings);
+
+      // Recalculate revenue optimistically excluding cancelled bookings
+      const newRevenue = updatedBookings
+        .filter((b) => b.status !== "Cancelled" && b.status !== "cancelled")
+        .reduce((sum, b) => sum + (Number(b.budget) || 0), 0);
+      setStats((prev) => ({ ...prev, totalRevenue: newRevenue }));
+
+      // Also sync latest stats with server
+      api.getDashboardStats().then((res) => {
+        if (res.success && res.stats) setStats(res.stats);
+      }).catch(() => {});
     } catch (err) {
       alert("Failed to update booking: " + err.message);
     } finally {
